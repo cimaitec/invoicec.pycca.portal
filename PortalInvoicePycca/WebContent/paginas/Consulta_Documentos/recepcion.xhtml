@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value="Consulta Documentos" />
+	</ui:define>
+
+	<ui:define name="tituloFormulario">
+		<h:outputText value="Documentos" styleClass="titulo" />
+	</ui:define>
+	<ui:define name="contenido">
+
+		<style>
+.style1 {
+	text-align: right;
+}
+.style3 {
+	text-align: left;
+}
+
+.style2 {
+	text-align: center;
+	background: blue;
+	color: white;
+	font-weight: bold;
+}
+
+.imageClass {
+	display: block;
+	background-image: url('/imagenes/pdf.png') no-repeat 100%;
+}
+</style>
+
+		<h:form id="frm1" styleClass="form" >
+			<p:growl id="growl" showDetail="true" sticky="true" /> 
+			<p:remoteCommand name="onload"
+				action="#{facRecepcionControlador.CargarDatos}" autorun="true"
+				update="datosEmisorPanel" />
+			<p:panel id="datosEmisorPanel">
+			 
+			 <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+			 <p:panelGrid style="margin: 0 auto;" id="panelG"> 
+						 <p:row>
+							<p:column colspan="1" styleClass="style1">
+								<strong><h:outputLabel styleClass="label" size="30"
+										value="RUC Proveedor" /></strong>
+							</p:column>
+							<p:column colspan="1" styleClass="style3">
+								<h:inputText styleClass="text" style="font-weight: bold;"
+									value="#{facRecepcionControlador.ruc}"/>
+							
+							</p:column>
+						</p:row> <p:row>
+							<p:column colspan="1" styleClass="style1">
+								<strong><h:outputLabel styleClass="label" size="30"
+										value="Razón social :" /></strong>
+							</p:column>
+							<p:column colspan="1" styleClass="style3">
+								<h:inputText styleClass="text" style="font-weight: bold;"
+									value="#{facRecepcionControlador.razonSocial}" />
+							</p:column>
+						</p:row> <p:row>
+							<p:column styleClass="style1">
+								<strong><h:outputLabel styleClass="label"
+										value="Numero del Documento:" /></strong>
+							</p:column>
+							<p:column styleClass="style3">
+								<h:inputText id ="numDoc" value="#{facRecepcionControlador.numDocumento}"
+									size="30" title="Numero del Documento"/>
+								<p:watermark for="numDoc" value="001-001-000000001" id="placeHolderNumDoc" />
+							</p:column>
+						</p:row> <p:row>
+							<p:column styleClass="style1">
+								<strong><h:outputLabel styleClass="label"
+										value="Tipo de Documento:" /></strong>
+							</p:column>
+							<p:column styleClass="style3">
+								<p:selectOneMenu
+									value="#{facRecepcionControlador.seleccionTipo}">
+									<f:selectItems value="#{facRecepcionControlador.tipo}" />
+								</p:selectOneMenu>
+							</p:column>
+						</p:row> <p:row>
+							<p:column styleClass="style1">
+								<strong><h:outputLabel styleClass="label"
+										value="Estados:" /></strong>
+							</p:column>
+							<p:column styleClass="style3">
+								<p:selectOneMenu
+									value="#{facRecepcionControlador.seleccionTipoEstado}">
+									<f:selectItems value="#{facRecepcionControlador.tipoEstados}" />
+								</p:selectOneMenu>
+							</p:column>
+						</p:row> <p:row>
+							<p:column>
+								<strong><h:outputLabel styleClass="label"
+										value="Fecha Inicial:" /></strong>
+								<br></br>
+								<p:calendar id="txt_inicial"
+									value="#{facRecepcionControlador.fechaInicio}"
+									pattern="yyyy-MM-dd" mask="true" mode="popup" showOn="button"
+									readonlyInput="true">
+									<f:convertDateTime type="date" dateStyle="short"
+										pattern="yyyy-MM-dd" />
+								</p:calendar>
+							</p:column>
+							<p:column>
+								<strong><h:outputLabel styleClass="label"
+										value="Fecha Final:" /></strong>
+								<br></br>
+								<p:calendar id="txt_final"
+									value="#{facRecepcionControlador.fechaFinal}"
+									pattern="yyyy-MM-dd" mask="true" mode="popup" showOn="button"
+									readonlyInput="true">
+									<f:convertDateTime type="date" dateStyle="short"
+										pattern="yyyy-MM-dd" />
+								</p:calendar>
+							</p:column>
+						</p:row> <p:row>
+							<p:column style="text-align: center;" colspan="2">
+								<p:commandButton value=" Busqueda " icon="ui-icon-search"
+									title="Buscar Filtrado"
+									action="#{facRecepcionControlador.llenarDetalleDocumento()}"
+									update=":frm1:listaDocumentos,:frm1:datosEmisorPanel">
+								</p:commandButton>
+							</p:column>
+						</p:row> </p:panelGrid>
+			
+				<h:panelGroup id="listaDocumentos">
+					<p:dataTable styleClass="cabeceraTabla"
+						var="doc"
+						value="#{facRecepcionControlador.docRecepcion}"
+						paginator="true" rows="10" id="myData"
+						   >
+						<f:facet name="header">  
+		            		Recepción de documentos electrónicos  
+		        		</f:facet>
+						<p:column headerText="RUC Proveedor" style="width:10%">
+							<h:outputText value="#{doc.id.rucProveedor}" />
+						</p:column>
+						
+						<p:column headerText="Razón Social" style="width:25%">
+							<h:outputText value="#{doc.razonSocialProv}" />
+						</p:column>
+						
+						<p:column headerText="Documento" style="width:15%">
+							<h:outputText value="#{doc.id.estab}-#{doc.id.ptoEmi}-#{doc.id.secuencial}" />
+						</p:column>
+						
+						<p:column headerText="Total" style="width:10% ; text-align: center;">
+							<h:outputText value="#{doc.total}" style="text-align: right"/>
+						</p:column>
+						
+						<p:column headerText="Fecha Emisión" style="width:10% ; text-align: center">
+							<h:outputText value="#{doc.fechaEmision}" />
+						</p:column>
+						<p:column headerText="Aprobación"
+							style="width:10% ; text-align:center">
+							<h:outputText value="#{doc.estadowf=='S'? 'Aprobado' :( doc.estadowf=='N'?'No Aprobado':'Pendiente')}" />
+ 						</p:column>
+						
+						<p:column headerText="PDF" >
+							<p:commandLink action="#{facRecepcionControlador.pdf(doc)}"
+								update=":frm1:growl" ajax="false" 
+								title="#{doc.pdfImag==null? 'PDF No disponible' :'Descargar PDF'}"
+								disabled="#{doc.pdfImag==null? true : false}">
+								<p:graphicImage value="/imagenes/pdf.png" ></p:graphicImage>
+								<f:setPropertyActionListener
+									target="#{facRecepcionControlador.valorDetalleDocumento}"
+									value="#{facDetalleDocumentoEntidad}" ></f:setPropertyActionListener>
+							</p:commandLink>
+						</p:column>
+						
+						<p:column headerText="XML" >
+							<p:commandLink
+								actionListener="#{facRecepcionControlador.xml(doc)}"
+								update=":frm1:growl" ajax="false"
+								title="#{doc.xmlDoc==null? 'XML No disponible' :'Descargar XML'}"
+								disabled="#{doc.xmlDoc==null? true : false}">
+								<p:graphicImage value="/imagenes/xml.png"></p:graphicImage>
+								<f:setPropertyActionListener
+									target="#{facRecepcionControlador.valorDetalleDocumento}"
+									value="#{facDetalleDocumentoEntidad}"></f:setPropertyActionListener>
+							</p:commandLink>
+						</p:column>
+						<p:column headerText="Acción" style="width:15% ; text-align:center">
+								<p:commandButton icon="ui-icon-check"
+									title="Aprobar comprobante"
+									update=":frm1:listaDocumentos,:frm1:datosEmisorPanel"
+									action="#{facRecepcionControlador.actualizarEstado('S',doc)}"/>
+								<p:commandButton icon="ui-icon-arrowreturnthick-1-w"
+									title="Devolver a pendientes"
+									update=":frm1:listaDocumentos,:frm1:datosEmisorPanel"
+									action="#{facRecepcionControlador.actualizarEstado('P',doc)}"/>
+								<p:commandButton icon="ui-icon-closethick"
+									title="Rechazar comprobante"
+									update=":frm1:listaDocumentos,:frm1:datosEmisorPanel"
+									action="#{facRecepcionControlador.actualizarEstado('N',doc)}"/>
+						</p:column>
+					</p:dataTable>
+				</h:panelGroup>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

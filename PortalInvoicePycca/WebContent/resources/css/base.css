@@ -1,0 +1,10 @@
+@charset "utf-8";
+.ui-widget,
+.ui-widget .ui-widget
+{
+    font-size: 90% !important;
+}
+
+
+.ui-menubar   {mouseover: black; background-color: #FFFFFF !important; font:bold; font-weight:bold;color:#FFFFFF background: #FFFFFF;}
+.ui-state-hover {cursor:hand ;background-color: #FFFFFF !important; background: black; font:  bold; }
